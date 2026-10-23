@@ -1,0 +1,65 @@
+name: Extract worker archive
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'booga-track-worker 2.zip'
+      - '.github/workflows/unzip-archive.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Extract archive safely
+        id: extract
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import os
+
+          archive = Path("booga-track-worker 2.zip")
+          if not archive.is_file():
+              print("No archive found; nothing to extract.")
+              Path(os.environ["GITHUB_OUTPUT"]).write_text("changed=false\n")
+              raise SystemExit(0)
+
+          root = Path.cwd().resolve()
+          with ZipFile(archive) as zf:
+              for info in zf.infolist():
+                  if info.is_dir():
+                      continue
+                  name = PurePosixPath(info.filename)
+                  if name.is_absolute() or not name.parts or any(part in ("", ".", "..") for part in name.parts):
+                      raise SystemExit(f"Unsafe archive path rejected: {info.filename!r}")
+                  destination = (root / Path(*name.parts)).resolve()
+                  if destination != root and root not in destination.parents:
+                      raise SystemExit(f"Archive path escapes repository: {info.filename!r}")
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  with zf.open(info) as source, destination.open("wb") as target:
+                      while chunk := source.read(1024 * 1024):
+                          target.write(chunk)
+
+          archive.unlink()
+          Path(os.environ["GITHUB_OUTPUT"]).write_text("changed=true\n")
+          print("Extracted archive files and removed the ZIP.")
+          PY
+
+      - name: Commit extracted files
+        if: steps.extract.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Extract worker files from archive"
+          git push
