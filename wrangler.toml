@@ -1,0 +1,10 @@
+name = "booga-track-dashboard"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# Public https address of your API, no trailing slash. Examples:
+#   https://api.yourdomain.com
+#   https://something.trycloudflare.com   (from TUNNEL=1 on the API)
+# Avoid raw IPs (http://1.2.3.4:3000) - Cloudflare Workers usually can't connect to them.
+API_URL = "https://your-api-domain.com"

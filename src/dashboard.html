@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080d">
+<title>Booga Track</title>
+<link rel="icon" href="/icon-mojo.png">
+<script>try{var t=localStorage.getItem('bb_theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+:root{color-scheme:dark;--bg:#08080d;--side:rgba(12,12,19,.72);--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.085);--bd:rgba(255,255,255,.09);--fg:#f4f4f8;--mute:#9a9ab0;--dim:#66667e;--ok:#34d399;--bad:#fb7185;--warn:#fbbf24;--mojo:#a78bfa;--candy:#fbbf24;--inv:#5eead4;--acc:#8b5cf6;--acc2:#f97316;--grid:rgba(255,255,255,.07);--r:16px;--shadow:0 12px 36px rgba(0,0,0,.4);--glow1:rgba(124,58,237,.26);--glow2:rgba(249,115,22,.16)}
+[data-theme=light]{color-scheme:light;--bg:#f3f3f9;--side:rgba(255,255,255,.8);--card:#fff;--card2:#ececf5;--bd:rgba(20,20,45,.1);--fg:#14141f;--mute:#5b5b72;--dim:#9a9ab2;--ok:#059669;--bad:#e11d48;--warn:#b45309;--mojo:#7c3aed;--candy:#d97706;--inv:#0d9488;--grid:rgba(20,20,45,.08);--shadow:0 10px 28px rgba(30,30,70,.1);--glow1:rgba(124,58,237,.12);--glow2:rgba(249,115,22,.09)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.4}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:var(--card2);padding:2px 6px;border-radius:6px;word-break:break-all}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 520px at 6% -12%,var(--glow1),transparent 60%),radial-gradient(800px 520px at 100% 112%,var(--glow2),transparent 60%),var(--bg)}
+.app{display:flex;min-height:100vh}
+aside{width:252px;flex:none;position:sticky;top:0;height:100vh;padding:20px 14px 16px;display:flex;flex-direction:column;border-right:1px solid var(--bd);background:var(--side);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:12px;padding:0 8px 20px}
+.logo .mark{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(249,115,22,.4));border:1px solid var(--bd)}
+.logo .mark img{width:25px;height:25px;object-fit:contain}
+.logo b{display:block;font-size:16px;letter-spacing:-.2px}
+.logo small{color:var(--mute);font-size:10.5px;letter-spacing:2px;text-transform:uppercase}
+.grp{font-size:10.5px;letter-spacing:1.6px;color:var(--dim);text-transform:uppercase;padding:14px 12px 6px}
+nav button{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border-radius:12px;color:var(--mute);font-weight:550;font-size:14px;text-align:left;transition:.15s;position:relative}
+nav button:hover{background:var(--card);color:var(--fg)}
+nav button.active{background:var(--card2);color:var(--fg)}
+nav button.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(var(--a1),var(--a2))}
+nav .ic{width:20px;height:20px;display:grid;place-items:center;flex:none}
+nav .ic svg,nav .ic img{width:19px;height:19px;object-fit:contain}
+nav .tag{margin-left:auto;font-size:11.5px;background:var(--card2);color:var(--mute);padding:2px 8px;border-radius:99px}
+.side-bot{margin-top:auto;display:grid;gap:10px}
+.conn{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:13px;background:var(--card);border:1px solid var(--bd);font-size:13px;cursor:pointer;text-align:left;width:100%}
+.conn:hover{background:var(--card2)}
+.conn small{display:block;color:var(--mute);font-size:11.5px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--dim);flex:none;position:relative}
+.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}
+.dot.ok::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--ok);opacity:0;animation:ping 2.4s infinite}
+@keyframes ping{0%{transform:scale(.5);opacity:.7}100%{transform:scale(1.4);opacity:0}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;transition:.15s;white-space:nowrap}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn svg{width:16px;height:16px}
+.btn.ghost{background:var(--card2);color:var(--fg);border:1px solid var(--bd)}
+.btn.ghost:hover{filter:none;background:var(--card);border-color:var(--mute)}
+.btn.sm{padding:6px 11px;font-size:12.5px;border-radius:9px}
+.btn.red{color:var(--bad)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+main{flex:1;min-width:0;padding:26px 32px 60px;max-width:1380px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.top h1{font-size:27px;letter-spacing:-.6px}
+.top .sub{color:var(--mute);margin-top:3px;font-size:14px}
+.tools{display:flex;gap:8px;align-items:center}
+.live{display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:99px;background:var(--card);border:1px solid var(--bd);font-size:12.5px;color:var(--mute);white-space:nowrap}
+.ibtn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--card);border:1px solid var(--bd);color:var(--mute);transition:.15s}
+.ibtn:hover{color:var(--fg);background:var(--card2)}
+.ibtn svg{width:18px;height:18px}
+.ibtn.spin svg{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.banner{display:none;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;margin-bottom:18px;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35)}
+.banner.show{display:flex}
+.banner.info{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.35)}
+.banner b{display:block;margin-bottom:2px}
+.banner p{color:var(--mute);font-size:13.5px}
+.banner .acts{margin-left:auto;display:flex;gap:8px;flex:none}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:20px;min-width:0}
+.card h3{font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;font-weight:650}
+.card h3 .btn{margin-left:auto}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.split{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-bottom:14px}
+.stat{position:relative;overflow:hidden;padding:18px 18px 14px}
+.stat .l{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:12.5px;font-weight:550}
+.stat .l img,.stat .l svg{width:18px;height:18px;object-fit:contain}
+.stat .v{display:block;font-size:30px;font-weight:750;letter-spacing:-1px;margin:8px 0 2px;font-variant-numeric:tabular-nums}
+.stat .d{font-size:12.5px;color:var(--mute)}
+.stat .d b{color:var(--ok);font-weight:650}
+.stat .spark{position:absolute;right:0;bottom:0;width:40%;height:46px;opacity:.9;pointer-events:none}
+.pills{display:inline-flex;background:var(--card2);border-radius:11px;padding:3px;gap:2px}
+.pills button{padding:5px 11px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--mute)}
+.pills button.active{background:var(--bg);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.chead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.chead .big{font-size:32px;font-weight:760;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:var(--c)}
+.chead .lbl{display:block;color:var(--mute);font-size:12.5px}
+.chead .rate{color:var(--mute);font-size:12.5px;text-align:right}
+.chead .rate b{color:var(--fg)}
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{fill:var(--dim);font-size:12.5px}
+.chart .tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,calc(-100% - 12px));background:var(--bg);border:1px solid var(--bd);box-shadow:var(--shadow);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--mute);white-space:nowrap;transition:opacity .1s;z-index:2}
+.chart .tip b{display:block;color:var(--fg);font-size:13.5px}
+.lb{display:grid;gap:4px}
+.lrow{display:grid;grid-template-columns:40px minmax(110px,1.3fr) minmax(70px,1.6fr) auto auto;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;cursor:pointer;transition:.12s}
+.lrow:hover{background:var(--card2)}
+.lrow.off{opacity:.55}
+.lrow.ov{grid-template-columns:40px minmax(110px,1.3fr) 1fr 1fr}
+.nm b{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm small{color:var(--mute);font-size:12px;display:flex;align-items:center;gap:6px}
+.lvl{font-size:10.5px;font-weight:700;color:var(--mute);background:var(--card2);padding:1px 6px;border-radius:6px}
+.bar{height:7px;background:var(--card2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c),var(--c2,var(--c)));transition:width .6s}
+.val{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;min-width:62px}
+.gain{font-size:12px;font-weight:650;color:var(--ok);background:rgba(52,211,153,.12);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.gain.zero{color:var(--mute);background:var(--card2)}
+.av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:750;font-size:15px;color:#fff;position:relative;flex:none}
+.av i{position:absolute;right:-3px;bottom:-3px;width:11px;height:11px;border-radius:50%;background:var(--dim);border:2px solid var(--bg)}
+.av i.on{background:var(--ok)}
+.badge{font-size:11px;font-weight:650;padding:2px 8px;border-radius:99px;background:var(--card2);color:var(--mute)}
+.badge.ok{background:rgba(52,211,153,.14);color:var(--ok)}
+.badge.warn{background:rgba(251,191,36,.14);color:var(--warn)}
+.empty{padding:34px 14px;text-align:center;color:var(--mute);font-size:14px}
+.empty b{color:var(--fg)}
+.minis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 6px}
+.minis>div{background:var(--card2);border-radius:12px;padding:10px 13px}
+.minis small{display:block;color:var(--mute);font-size:11.5px}
+.minis b{font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tool{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fld,select{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 13px;outline:none;transition:.15s;min-width:0}
+.fld:focus,select:focus{border-color:var(--acc)}
+.fld{flex:1;min-width:180px}
+select option{background:var(--bg);color:var(--fg)}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:3px}
+.seg button{padding:7px 13px;border-radius:9px;font-size:13px;font-weight:600;color:var(--mute)}
+.seg button.active{background:var(--card2);color:var(--fg)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 12px;font-weight:650;white-space:nowrap}
+td{padding:11px 12px;border-top:1px solid var(--bd);white-space:nowrap}
+tbody tr{cursor:pointer;transition:.12s}
+tbody tr:hover{background:var(--card2)}
+.r{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warnc{color:var(--warn)}
+.who{display:flex;align-items:center;gap:11px}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.item{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.item:hover{transform:translateY(-3px);border-color:var(--inv);box-shadow:var(--shadow)}
+.item .ico{width:64px;height:64px;border-radius:14px;background:var(--card2);display:grid;place-items:center;overflow:hidden}
+.item .ico img{width:100%;height:100%;object-fit:cover}
+.ph{font-weight:750;font-size:22px;color:var(--mute)}
+.item .n{font-weight:650;font-size:13.5px;line-height:1.2;word-break:break-word}
+.item .q{font-weight:750;color:var(--inv);font-variant-numeric:tabular-nums}
+.item .chips{font-size:11px;color:var(--mute)}
+.set{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.set .wide{grid-column:1/-1}
+.set p{color:var(--mute);font-size:13.5px;margin-bottom:12px}
+.line{display:flex;gap:8px;flex-wrap:wrap}
+.box{display:block;padding:12px 13px;border-radius:12px;background:var(--card2);margin-bottom:10px;font-size:12.5px;line-height:1.5}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid var(--bd)}
+.opt:first-of-type{border-top:0}
+.opt small{display:block;color:var(--mute);font-size:12.5px}
+.sw{position:relative;width:44px;height:25px;flex:none}
+.sw input{opacity:0;position:absolute;inset:0;cursor:pointer;z-index:1}
+.sw i{position:absolute;inset:0;border-radius:99px;background:var(--card2);border:1px solid var(--bd);transition:.2s}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:var(--mute);transition:.2s}
+.sw input:checked+i{background:var(--acc);border-color:var(--acc)}
+.sw input:checked+i::after{left:22px;background:#fff}
+.steps{display:grid;gap:2px}
+.step{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 4px;border-top:1px solid var(--bd)}
+.step:first-child{border-top:0}
+.step .si{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;background:var(--card2);color:var(--mute)}
+.step.ok .si{background:rgba(52,211,153,.18);color:var(--ok)}
+.step.bad .si{background:rgba(251,113,133,.18);color:var(--bad)}
+.step.warn .si{background:rgba(251,191,36,.18);color:var(--warn)}
+.step.ok,.step.bad,.step.warn{color:var(--fg)}
+.step b{font-size:14px}
+.step p{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.step .fix{color:var(--fg);margin-top:5px}
+.shade{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.2s;z-index:50}
+.shade.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--bg);border-left:1px solid var(--bd);box-shadow:var(--shadow);transform:translateX(104%);transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:51;overflow-y:auto;padding:22px}
+.drawer.show{transform:none}
+.dh{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.dh .av{width:50px;height:50px;font-size:20px;border-radius:15px}
+.dh h2{font-size:20px;letter-spacing:-.3px}
+.dh .x{margin-left:auto}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dgrid>div{background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:12px 14px}
+.dgrid small{color:var(--mute);font-size:12px;display:flex;align-items:center;gap:6px}
+.dgrid small img{width:15px;height:15px}
+.dgrid b{font-size:20px;font-variant-numeric:tabular-nums}
+.dgrid em{font-style:normal;font-size:12px;color:var(--ok);font-weight:650}
+.dsec{margin-bottom:18px}
+.dsec h4{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+.hrow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--bd);font-size:14px;cursor:pointer}
+.hrow:first-of-type{border-top:0}
+.sk{background:linear-gradient(90deg,var(--card),var(--card2),var(--card));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:10px;min-height:16px}
+@keyframes sk{to{background-position:-200% 0}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,24px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.mnav{display:none}
+@media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.split,.two{grid-template-columns:1fr}.set{grid-template-columns:1fr}}
+@media(max-width:820px){
+  aside{display:none}
+  main{padding:18px 14px 96px}
+  .top h1{font-size:23px}
+  .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--side);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:2px}
+  .mnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:12px;color:var(--mute);font-size:10.5px;font-weight:600}
+  .mnav button.active{background:var(--card2);color:var(--fg)}
+  .mnav svg,.mnav img{width:21px;height:21px;object-fit:contain}
+  .lrow{grid-template-columns:40px 1fr auto;gap:10px}
+  .lrow .bar,.lrow .gain{display:none}
+  .minis{grid-template-columns:1fr 1fr}
+  .stat .v{font-size:25px}
+  .stat .spark{display:none}
+  .lrow.ov{grid-template-columns:40px minmax(0,1fr) auto auto;gap:8px}
+  .lrow.ov .val{min-width:0;font-size:13px}
+  .lrow.ov .u{display:none}
+  .chead .big{font-size:27px}
+  .banner{flex-direction:column}.banner .acts{margin-left:0}
+  .hide-m{display:none}
+}
+@media(max-width:480px){.grid4{gap:10px}.stat{padding:14px 14px 12px}.items{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="app">
+  <aside>
+    <div class="logo"><div class="mark"><img src="/icon-mojo.png" alt=""></div><div><b>Booga Booga</b><small>Track</small></div></div>
+    <nav id="nav"></nav>
+    <div class="side-bot">
+      <button class="conn" id="connBtn" title="Open connection check"><span class="dot" id="sdot"></span><span><span id="stxt">Connecting...</span><small id="ssub">&nbsp;</small></span></button>
+      <button class="btn" id="copyLoader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>Copy loader</button>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+<nav class="mnav" id="mnav"></nav>
+<div class="shade" id="shade"></div>
+<div class="drawer" id="drawer" aria-hidden="true"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+window.__CFG__ = /*CFG*/{};
+(function(){
+'use strict';
+const CFG = window.__CFG__ || {};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls = { get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}, del:k=>{try{localStorage.removeItem(k)}catch(e){}} };
+
+const state = {
+  tab: ls.get('bb_tab','overview'), key: ls.get('bb_key',''), apiBase: ls.get('bb_api','').replace(/\/+$/,''),
+  range: +ls.get('bb_range','60'), accounts: [], chartUser: 'all', invUser: 'all', invQ: '', invSort: 'qty',
+  q: '', filter: 'all', sort: 'status', hideOffline: ls.get('bb_hide','0')==='1', compact: ls.get('bb_compact','0')==='1',
+  interval: +ls.get('bb_int','5'), drawer: null, conn: { s: 'idle' }, ms: null, diag: null, showLdr: false
+};
+if (!['overview','mojo','candy','inventory','accounts','settings'].includes(state.tab)) state.tab = 'overview';
+let busy = false, timer = null, loaded = false;
+
+/* ---------- helpers ---------- */
+function fmt(n){ if (n == null || isNaN(n)) return '—'; n = Math.round(n);
+  if (state.compact) { const a = Math.abs(n); for (const [v,s] of [[1e12,'T'],[1e9,'B'],[1e6,'M'],[1e3,'K']]) if (a >= v) return (n/v).toFixed(a>=v*100?0:a>=v*10?1:2).replace(/\.0+$|(\.\d)0$/,'$1') + s; }
+  return n.toLocaleString('en-US'); }
+function fmtShort(v){ const c = state.compact; state.compact = true; const s = fmt(v); state.compact = c; return s; }
+function ago(ms){ if(!ms) return 'never'; const s=Math.max(0,(Date.now()-ms)/1000|0); if(s<10) return 'just now'; if(s<60) return s+'s ago'; if(s<3600) return (s/60|0)+'m ago'; if(s<86400) return (s/3600|0)+'h ago'; return (s/86400|0)+'d ago'; }
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2000); }
+function setNum(sel, v, f){ const el = typeof sel==='string'?$(sel):sel; if(!el) return; f = f || fmt; v = v || 0;
+  const from = el.dataset.v === undefined ? v : +el.dataset.v; el.dataset.v = v;
+  if (from === v) { el.textContent = f(v); return; }
+  const t0 = performance.now(); cancelAnimationFrame(el._r);
+  const step = t => { const k = Math.min(1,(t-t0)/650), e = 1-Math.pow(1-k,3); el.textContent = f(from+(v-from)*e); if (k<1) el._r=requestAnimationFrame(step); else el.textContent=f(v); };
+  el._r = requestAnimationFrame(step); }
+function hue(s){ let h=0; for (const c of String(s)) h=(h*31+c.charCodeAt(0))%360; return h; }
+function avatar(a){ const h=hue(a.user); return `<div class="av" style="background:linear-gradient(135deg,hsl(${h} 70% 55%),hsl(${(h+50)%360} 70% 40%))">${esc((a.user[0]||'?').toUpperCase())}<i class="${a.online?'on':''}"></i></div>`; }
+const idle = a => a.online && !(a.mojoHour > 0) && !(a.candyHour > 0);
+const API_BASE = () => state.apiBase || '';
+const apiOrigin = () => state.apiBase || (CFG.apiUrl || '');
+function loaderUrl(masked){
+  const k = masked ? '••••••••' : encodeURIComponent(state.key);
+  return state.apiBase ? `${state.apiBase}/loader.lua?key=${k}` : `${location.origin}/loader.lua?key=${k}&via=worker`;
+}
+const loaderLine = masked => `loadstring(game:HttpGet("${loaderUrl(masked)}"))()`;
+
+/* ---------- api ---------- */
+function mkErr(kind, detail, hint){ const e = new Error(kind); e.kind = kind; e.detail = detail; e.hint = hint; return e; }
+async function api(path, opts={}){
+  const t0 = performance.now(); let r;
+  try { r = await fetch(API_BASE() + path, Object.assign({ cache:'no-store' }, opts, { headers: Object.assign({'x-key': state.key}, opts.headers||{}) })); }
+  catch (e) { throw mkErr('network', state.apiBase ? `Your browser could not reach ${state.apiBase}. In direct mode the API must be https (or this page must be http) and allow CORS.` : 'Could not reach the dashboard server. Check your internet connection.'); }
+  state.ms = Math.round(performance.now() - t0);
+  let body = null; if ((r.headers.get('content-type')||'').includes('json')) { try { body = await r.json(); } catch(e) {} }
+  if (r.status === 401 && body && body.error === 'bad key') throw mkErr('auth');
+  if (!r.ok) {
+    if (body && (body.error === 'unreachable' || body.error === 'config')) throw mkErr(body.error, body.detail, body.hint);
+    throw mkErr('http', `The API answered HTTP ${r.status}.`, 'Check that API_URL points at the Booga Track API and that it is running.');
+  }
+  if (body == null) throw mkErr('http', 'The server answered, but not with API data.', 'API_URL probably points at the wrong server. It should be the address printed by the API on start-up.');
+  return body;
+}
+
+/* ---------- charts ---------- */
+function niceCeil(m){ const p = Math.pow(10, Math.floor(Math.log10(m))); for (const k of [1,2,2.5,5,10]) if (m <= k*p) return k*p; return 10*p; }
+function chart(el, buckets, color, unit, id){
+  if (typeof el === 'string') el = $(el); if (!el || !buckets || buckets.length < 2) return;
+  const sig = buckets.map(b => b.earned).join(',') + color + state.range + state.compact + document.documentElement.dataset.theme;
+  if (el._sig === sig) return; el._sig = sig;
+  const W = 800, H = 250, L = 46, R = 10, T = 14, B = 28, n = buckets.length;
+  const max = niceCeil(Math.max(1, ...buckets.map(b => b.earned)));
+  const X = i => L + i*(W-L-R)/(n-1), Y = v => T + (1 - v/max)*(H-T-B);
+  let line = `M${X(0)},${Y(buckets[0].earned)}`;
+  for (let i = 1; i < n; i++) { const mx = (X(i-1)+X(i))/2; line += ` C${mx},${Y(buckets[i-1].earned)} ${mx},${Y(buckets[i].earned)} ${X(i)},${Y(buckets[i].earned)}`; }
+  const area = line + ` L${X(n-1)},${H-B} L${X(0)},${H-B}Z`;
+  let grid = '';
+  for (let g = 0; g <= 4; g++) { const v = max*g/4, y = Y(v); grid += `<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--grid)"/><text x="${L-8}" y="${y+4}" text-anchor="end">${fmtShort(v)}</text>`; }
+  const tl = i => new Date(buckets[i].t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const xl = [0, (n/2)|0, n-1].map((i,k) => `<text x="${X(i)}" y="${H-7}" text-anchor="${k===0?'start':k===2?'end':'middle'}">${tl(i)}</text>`).join('');
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)} earned over time"><defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".4"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}<path d="${area}" fill="url(#g${id})"/><path d="${line}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${xl}
+    <line class="vl" y1="${T}" y2="${H-B}" stroke="var(--mute)" stroke-dasharray="4 4" opacity="0"/><circle class="pt" r="5.5" fill="var(--bg)" stroke="${color}" stroke-width="3" opacity="0"/></svg><div class="tip"></div>`;
+  const svg = el.querySelector('svg'), tip = el.querySelector('.tip'), vl = svg.querySelector('.vl'), pt = svg.querySelector('.pt');
+  el.onmousemove = e => { const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left)/r.width*W;
+    const i = Math.max(0, Math.min(n-1, Math.round((px-L)/((W-L-R)/(n-1))))); const x = X(i), y = Y(buckets[i].earned);
+    vl.setAttribute('x1',x); vl.setAttribute('x2',x); vl.setAttribute('opacity',1); pt.setAttribute('cx',x); pt.setAttribute('cy',y); pt.setAttribute('opacity',1);
+    tip.innerHTML = `${tl(i)}<b>+${fmt(buckets[i].earned)} ${esc(unit)}</b>`; tip.style.left = (x/W*100)+'%'; tip.style.top = (y/H*r.height)+'px'; tip.style.opacity = 1; };
+  el.onmouseleave = () => { tip.style.opacity = 0; vl.setAttribute('opacity',0); pt.setAttribute('opacity',0); };
+}
+function spark(buckets, color){
+  if (!buckets || buckets.length < 2) return '';
+  const W = 200, H = 46, n = buckets.length, max = Math.max(1, ...buckets.map(b => b.earned));
+  const X = i => i*W/(n-1), Y = v => H-4 - v/max*(H-12);
+  const pts = buckets.map((b,i) => `${X(i).toFixed(1)},${Y(b.earned).toFixed(1)}`).join(' L');
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sp${color.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".3"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="M${pts} L${W},${H} L0,${H}Z" fill="url(#sp${color.slice(1)})"/><path d="M${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+/* ---------- icons ---------- */
+const ICONS = {
+  overview:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="2"/><rect x="3" y="15" width="7.5" height="6" rx="2"/><rect x="13.5" y="11.5" width="7.5" height="9.5" rx="2"/></svg>',
+  mojo:'<img src="/icon-mojo.png" alt="">', candy:'<img src="/icon-candy.png" alt="">',
+  inventory:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg>',
+  accounts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .6 3.2 2.2 3.5 5.2"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>',
+  theme:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .6 3.2 2.2 3.5 5.2"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg>'
+};
+const TABS = [['overview','Overview'],['mojo','Mojo'],['candy','Candy'],['inventory','Inventory'],['accounts','Accounts'],['settings','Settings']];
+const NAMES = { mojo:'Mojo', candy:'Candy' }, COLORS = { mojo:'var(--mojo)', candy:'var(--candy)' };
+const RANGES = [[15,'15m'],[60,'1h'],[360,'6h'],[1440,'24h']];
+const RL = { 15:'15 minutes', 60:'hour', 360:'6 hours', 1440:'24 hours' };
+function buildNav(){
+  const side = TABS.map(([t,l],i) => (i===0?'<div class="grp">Track</div>':i===4?'<div class="grp">Manage</div>':'') + `<button data-tab="${t}"><span class="ic">${ICONS[t]}</span>${l}${t==='accounts'?'<span class="tag" id="tagAcc">0</span>':''}</button>`).join('');
+  $('#nav').innerHTML = side;
+  $('#mnav').innerHTML = TABS.map(([t,l]) => `<button data-tab="${t}">${ICONS[t]}${l}</button>`).join('');
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+}
+
+/* ---------- page shells ---------- */
+function head(title, sub){ return `<header class="top"><div><h1>${title}</h1><p class="sub" id="sub">${sub||'&nbsp;'}</p></div>
+  <div class="tools"><div class="live"><span class="dot" id="ldot"></span><span id="liveTxt">Connecting...</span></div>
+  <button class="ibtn" id="rf" title="Refresh now" aria-label="Refresh">${ICONS.refresh}</button><button class="ibtn" id="th" title="Light / dark" aria-label="Toggle theme">${ICONS.theme}</button></div></header>
+  <div class="banner" id="banner"></div>`; }
+function rangePills(){ return `<div class="pills" data-pills>${RANGES.map(([r,l]) => `<button data-r="${r}" class="${state.range===r?'active':''}">${l}</button>`).join('')}</div>`; }
+function wireCommon(){
+  const m = $('#main');
+  const rf = $('#rf'); if (rf) rf.onclick = () => { rf.classList.add('spin'); refresh(true).finally(() => setTimeout(() => rf.classList.remove('spin'), 300)); };
+  const th = $('#th'); if (th) th.onclick = () => { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'light' ? 'dark' : 'light'; ls.set('bb_theme', d.dataset.theme); document.querySelectorAll('.chart').forEach(c => c._sig = null); refresh(true); };
+  m.querySelectorAll('[data-pills] button').forEach(b => b.onclick = () => { state.range = +b.dataset.r; ls.set('bb_range', state.range); m.querySelectorAll('[data-pills] button').forEach(x => x.classList.toggle('active', x === b)); refresh(true); });
+  m.querySelectorAll('[data-go]').forEach(b => b.onclick = () => setTab(b.dataset.go));
+}
+function shell(){
+  const m = $('#main'), t = state.tab;
+  m.dataset.tab = t; m.style.animation = 'none'; void m.offsetWidth; m.style.animation = '';
+  document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.documentElement.style.setProperty('--a1', {mojo:'#c4b5fd',candy:'#fde68a',inventory:'#5eead4'}[t] || '#c4b5fd');
+  document.documentElement.style.setProperty('--a2', {mojo:'#7c3aed',candy:'#f97316',inventory:'#0ea5e9'}[t] || '#f97316');
+  if (t === 'overview') {
+    m.innerHTML = head('Overview','Everything across your accounts at a glance') + `
+      <div class="grid4">
+        <div class="card stat"><span class="l">${ICONS.users} Online accounts</span><span class="v" id="s-on">0</span><span class="d" id="s-on-d">&nbsp;</span></div>
+        <div class="card stat"><span class="l"><img src="/icon-mojo.png" alt=""> Total Mojo</span><span class="v" id="s-mojo">0</span><span class="d" id="s-mojo-d">&nbsp;</span><span id="sp-mojo"></span></div>
+        <div class="card stat"><span class="l"><img src="/icon-candy.png" alt=""> Total Candy</span><span class="v" id="s-candy">0</span><span class="d" id="s-candy-d">&nbsp;</span><span id="sp-candy"></span></div>
+        <div class="card stat"><span class="l">${ICONS.box} Inventory items</span><span class="v" id="s-items">0</span><span class="d" id="s-items-d">&nbsp;</span></div>
+      </div>
+      <div class="two">
+        <div class="card"><div class="chead" style="--c:var(--mojo)"><div><h3 style="margin:0 0 6px">Mojo earned</h3><span class="big" id="o-mojo">+0</span><span class="lbl" id="o-mojo-l">&nbsp;</span></div><div>${rangePills()}<div class="rate" id="o-mojo-r" style="margin-top:8px">&nbsp;</div></div></div><div class="chart" id="o-mojo-c"><div class="sk" style="height:220px"></div></div></div>
+        <div class="card"><div class="chead" style="--c:var(--candy)"><div><h3 style="margin:0 0 6px">Candy earned</h3><span class="big" id="o-candy">+0</span><span class="lbl" id="o-candy-l">&nbsp;</span></div><div class="rate" id="o-candy-r" style="align-self:flex-end">&nbsp;</div></div><div class="chart" id="o-candy-c"><div class="sk" style="height:220px"></div></div></div>
+      </div>
+      <div class="split">
+        <div class="card"><h3>Accounts <button class="btn ghost sm" data-go="accounts">View all</button></h3><div class="lb" id="o-list"></div></div>
+        <div class="card"><h3>Top earners this hour</h3><div class="lb" id="o-top"></div></div>
+      </div>`;
+  } else if (t === 'mojo' || t === 'candy') {
+    m.innerHTML = head(NAMES[t], `Track ${NAMES[t].toLowerCase()} per account and what you earn over time`) + `
+      <div class="card" style="margin-bottom:14px"><div class="chead" style="--c:${COLORS[t]}"><div><span class="big" id="h-big">+0</span><span class="lbl" id="h-lbl">&nbsp;</span></div>
+        <div class="line" style="align-items:center"><select id="h-user"><option value="all">All accounts</option></select>${rangePills()}</div></div>
+        <div class="minis"><div><small>Total ${NAMES[t].toLowerCase()}</small><b id="h-total">0</b></div><div><small>Average rate</small><b id="h-rate">—</b></div><div><small>Best account</small><b id="h-best">—</b></div><div><small>Online</small><b id="h-on">0</b></div></div>
+        <div class="chart" id="h-chart"><div class="sk" style="height:220px"></div></div></div>
+      <div class="card"><h3>Accounts</h3><div class="lb" id="h-list"></div></div>`;
+    $('#h-user').onchange = e => { state.chartUser = e.target.value; refresh(true); };
+  } else if (t === 'inventory') {
+    m.innerHTML = head('Inventory','Everything your accounts are holding') + `
+      <div class="grid4" style="grid-template-columns:repeat(3,1fr)">
+        <div class="card stat"><span class="l">Item types</span><span class="v" id="i-types">0</span></div>
+        <div class="card stat"><span class="l">Total quantity</span><span class="v" id="i-total">0</span></div>
+        <div class="card stat"><span class="l">Most held</span><span class="v" id="i-top" style="font-size:21px;line-height:1.35;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></div></div>
+      <div class="tool"><input class="fld" id="q" placeholder="Search items..." value="${esc(state.invQ)}"><select id="invUser"><option value="all">All accounts</option></select>
+        <select id="sort"><option value="qty">Most held</option><option value="name">A to Z</option></select></div>
+      <div class="items" id="grid">${'<div class="sk" style="height:150px;border-radius:14px"></div>'.repeat(8)}</div>`;
+    $('#sort').value = state.invSort;
+    $('#q').oninput = e => { state.invQ = e.target.value; drawInv(); };
+    $('#sort').onchange = e => { state.invSort = e.target.value; drawInv(); };
+    $('#invUser').onchange = e => { state.invUser = e.target.value; refresh(true); };
+  } else if (t === 'accounts') {
+    m.innerHTML = head('Accounts','Every account running the loader') + `
+      <div class="tool"><input class="fld" id="aq" placeholder="Search accounts..." value="${esc(state.q)}">
+        <div class="seg" id="aflt">${[['all','All'],['online','Online'],['offline','Offline']].map(([k,l]) => `<button data-f="${k}" class="${state.filter===k?'active':''}">${l}</button>`).join('')}</div>
+        <select id="asort">${[['status','Sort: status'],['name','Sort: name'],['mojo','Sort: mojo'],['candy','Sort: candy'],['rate','Sort: earning rate']].map(([k,l]) => `<option value="${k}">${l}</option>`).join('')}</select></div>
+      <div class="card" style="overflow-x:auto;padding:8px"><table><thead><tr><th>Account</th><th>Status</th><th class="r">Level</th><th class="r">Mojo</th><th class="r">Candy</th><th class="r">Mojo / hr</th><th class="r">Candy / hr</th><th class="r hide-m">Items</th></tr></thead><tbody id="a-body"></tbody></table></div>`;
+    $('#asort').value = state.sort;
+    $('#aq').oninput = e => { state.q = e.target.value; drawAccounts(); };
+    $('#asort').onchange = e => { state.sort = e.target.value; drawAccounts(); };
+    $('#aflt').querySelectorAll('button').forEach(b => b.onclick = () => { state.filter = b.dataset.f; $('#aflt').querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b)); drawAccounts(); });
+  } else {
+    m.innerHTML = head('Settings','Connection, loader and display') + `<div class="set">
+      <div class="card wide"><h3>Connection check <button class="btn ghost sm" id="runDiag">Run check</button></h3><div class="steps" id="steps"><div class="sk" style="height:60px"></div></div></div>
+      <div class="card"><h3>Access key</h3><p>The same <code>ACCESS_KEY</code> your API prints on start-up (or has in its <code>.env</code>). Stored only in this browser.</p>
+        <div class="line"><input class="fld" type="password" id="key" placeholder="Paste your key" value="${esc(state.key)}" autocomplete="off"><button class="btn" id="saveKey">Save &amp; test</button></div></div>
+      <div class="card"><h3>API address</h3><p>Normally the Worker forwards requests to its <code>API_URL</code> (<code>${esc(CFG.apiUrl || 'not set')}</code>). If that is wrong or can't be reached, paste a working https address here to connect straight from this browser instead. Leave it empty to use the Worker.</p>
+        <div class="line"><input class="fld" id="apiBase" placeholder="https://xxxx.trycloudflare.com" value="${esc(state.apiBase)}"><button class="btn" id="saveApi">Save</button></div></div>
+      <div class="card wide"><h3>Loader</h3><p>Run this in your executor on every account you want to track. It is the same line the sidebar's <b>Copy loader</b> button copies.${state.apiBase ? '' : ' It goes through this Worker (https), so executors never need to reach your server directly.'}</p>
+        <code class="box" id="ldr"></code><div class="line"><button class="btn" id="ldrCopy">Copy loader</button><button class="btn ghost" id="ldrShow">Show key</button></div></div>
+      <div class="card wide"><h3>Display</h3>
+        <div class="opt"><span>Hide offline accounts<small>Only show accounts that are currently online</small></span><label class="sw"><input type="checkbox" id="hideOff" ${state.hideOffline?'checked':''}><i></i></label></div>
+        <div class="opt"><span>Compact numbers<small>Show 15.9K instead of 15,900</small></span><label class="sw"><input type="checkbox" id="compact" ${state.compact?'checked':''}><i></i></label></div>
+        <div class="opt"><span>Refresh speed<small>How often the dashboard asks for new stats</small></span><select id="int">${[2,5,10,30].map(s => `<option value="${s}">${s} seconds</option>`).join('')}</select></div></div></div>`;
+    $('#int').value = String(state.interval);
+    $('#saveKey').onclick = () => { state.key = $('#key').value.trim(); ls.set('bb_key', state.key); refresh(true).then(() => { toast('Key saved'); runDiag(); }); };
+    $('#saveApi').onclick = () => { const v = $('#apiBase').value.trim().replace(/\/+$/,''); if (v && !/^https?:\/\//i.test(v)) { toast('Address must start with https://'); return; }
+      state.apiBase = v; v ? ls.set('bb_api', v) : ls.del('bb_api'); toast(v ? 'Using direct connection' : 'Using the Worker'); drawLoader(); refresh(true).then(runDiag); };
+    $('#hideOff').onchange = e => { state.hideOffline = e.target.checked; ls.set('bb_hide', e.target.checked?'1':'0'); };
+    $('#compact').onchange = e => { state.compact = e.target.checked; ls.set('bb_compact', e.target.checked?'1':'0'); };
+    $('#int').onchange = e => { state.interval = +e.target.value; ls.set('bb_int', e.target.value); start(); };
+    $('#ldrCopy').onclick = copyLoader; $('#runDiag').onclick = runDiag;
+    $('#ldrShow').onclick = () => { state.showLdr = !state.showLdr; $('#ldrShow').textContent = state.showLdr ? 'Hide key' : 'Show key'; drawLoader(); };
+    drawLoader(); drawSteps();
+  }
+  wireCommon(); paintConn();
+}
+function drawLoader(){ const el = $('#ldr'); if (el) el.textContent = state.key ? loaderLine(!state.showLdr) : 'Save your access key first'; }
+
+/* ---------- connection state / diagnostics ---------- */
+function setConn(c){ state.conn = c; paintConn(); }
+function paintConn(){
+  const c = state.conn, ok = c.s === 'ok';
+  const cls = ok ? 'ok' : c.s === 'idle' ? '' : 'bad';
+  ['#sdot','#ldot'].forEach(s => { const d = $(s); if (d) d.className = 'dot ' + cls; });
+  const on = state.accounts.filter(a => a.online).length;
+  const txt = ok ? `${on} of ${state.accounts.length} online` : c.s === 'idle' ? 'Connecting...' : c.s === 'nokey' ? 'Not set up' : c.s === 'auth' ? 'Wrong key' : 'Cannot reach API';
+  const sub = ok ? `${state.apiBase ? 'Direct' : 'Via Worker'} · ${state.ms ?? '–'} ms` : c.s === 'idle' ? '' : 'Click to fix';
+  if ($('#stxt')) { $('#stxt').textContent = txt; $('#ssub').textContent = sub || ' '; }
+  const lt = $('#liveTxt'); if (lt) lt.textContent = ok ? 'Live · ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : txt;
+  document.title = ok && on ? `(${on}) Booga Track` : 'Booga Track';
+  const b = $('#banner'); if (!b) return;
+  if (ok || c.s === 'idle') { b.classList.remove('show'); return; }
+  let title, body, acts = '';
+  if (c.s === 'nokey') { b.classList.add('info'); title = 'Welcome - let\'s connect your API'; body = 'Paste your access key in Settings. The check there will tell you if anything else is missing.'; acts = state.tab !== 'settings' ? '<button class="btn sm" data-go="settings">Open settings</button>' : ''; }
+  else if (c.s === 'auth') { b.classList.remove('info'); title = 'The API rejected your access key'; body = 'Copy the <code>ACCESS_KEY</code> from your API\'s start-up message or <code>.env</code> and paste it in Settings.'; acts = state.tab !== 'settings' ? '<button class="btn sm" data-go="settings">Open settings</button>' : ''; }
+  else { b.classList.remove('info');
+    title = c.s === 'config' ? 'The Worker is not set up correctly' : c.s === 'unreachable' ? 'The Worker can\'t reach your API' : 'Cannot reach the API';
+    body = `${esc(c.detail || '')}${c.hint ? `<br><span style="color:var(--fg)">${esc(c.hint)}</span>` : ''}`;
+    acts = state.tab !== 'settings' ? '<button class="btn sm" data-go="settings">Run diagnostics</button>' : '<button class="btn sm" id="bnrDiag">Run diagnostics</button>'; }
+  b.innerHTML = `<div><b>${title}</b><p>${body}</p></div><div class="acts">${acts}</div>`;
+  b.classList.add('show');
+  b.querySelectorAll('[data-go]').forEach(x => x.onclick = () => setTab(x.dataset.go));
+  const bd = $('#bnrDiag'); if (bd) bd.onclick = runDiag;
+}
+async function runDiag(){
+  const steps = [], add = (st, title, detail, fix) => steps.push({ st, title, detail, fix });
+  state.diag = { running: true, steps: [] }; drawSteps();
+  let apiOk = false;
+  if (state.apiBase) {
+    const t0 = performance.now();
+    try { const r = await fetch(state.apiBase + '/', { cache:'no-store' }); const j = await r.json(); const ms = Math.round(performance.now()-t0);
+      if (j && j.name === 'booga-track-api') { apiOk = true; add('ok', 'Direct connection to your API', `${state.apiBase} answered in ${ms} ms.`); }
+      else add('bad', 'That address is not the Booga Track API', `${state.apiBase} answered but not like the API.`, 'Use the API URL printed when the API starts.'); }
+    catch (e) { add('bad', 'Browser cannot reach your API', state.apiBase, 'The address must be https:// when this page is https://, and the API must be running.'); }
+  } else {
+    let d = null;
+    try { const r = await fetch('/_diag', { cache:'no-store' }); d = await r.json(); } catch (e) {}
+    if (!d) add('bad', 'Worker diagnostics unavailable', 'This Worker did not answer /_diag.', 'Re-deploy the Worker with the latest worker.js.');
+    else {
+      const errs = d.problems.filter(p => p.level === 'error'), warns = d.problems.filter(p => p.level === 'warn');
+      if (!d.configured) add('bad', 'API_URL is set on the Worker', 'It is empty.', d.problems[0] ? d.problems[0].text : '');
+      else if (errs.length) add('bad', 'API_URL is set on the Worker', d.apiUrl, errs.map(p => p.text).join(' '));
+      else add(warns.length ? 'warn' : 'ok', 'API_URL is set on the Worker', d.apiUrl, warns.map(p => p.text).join(' '));
+      if (d.upstream) {
+        apiOk = d.upstream.ok;
+        add(d.upstream.ok ? 'ok' : 'bad', 'Worker can reach your API', d.upstream.ok ? `Answered in ${d.upstream.ms} ms.` : d.upstream.error,
+          d.upstream.ok ? '' : 'Make sure the API is running and API_URL is its public https address. Tip: set TUNNEL=1 in the API .env, or use the API address box below.');
+      } else if (d.configured) add('bad', 'Worker can reach your API', 'Skipped until API_URL is fixed.');
+    }
+  }
+  if (!state.key) add('bad', 'Access key', 'No key entered yet.', 'Paste your ACCESS_KEY above and press Save & test.');
+  else if (!apiOk) add('warn', 'Access key', 'Not tested - the API is unreachable.');
+  else { try { const a = await api('/api/accounts'); state.accounts = a.accounts; add('ok', 'Access key accepted', 'The API recognised your key.');
+      const on = a.accounts.filter(x => x.online).length;
+      add(a.accounts.length ? 'ok' : 'warn', 'Accounts reporting', a.accounts.length ? `${a.accounts.length} account${a.accounts.length===1?'':'s'}, ${on} online right now.` : 'None yet.', a.accounts.length ? '' : 'Click "Copy loader" and run it in your executor while in Booga Booga.'); }
+    catch (e) { add('bad', 'Access key', e.kind === 'auth' ? 'The API rejected this key.' : (e.detail || 'Request failed.'), e.kind === 'auth' ? 'Copy ACCESS_KEY exactly as the API prints it.' : e.hint); } }
+  state.diag = { running: false, steps }; drawSteps();
+}
+function drawSteps(){ const el = $('#steps'); if (!el) return; const d = state.diag;
+  if (!d) { el.innerHTML = '<div class="empty" style="padding:18px">Press <b>Run check</b> to test the Worker, your API, the key and your accounts.</div>'; return; }
+  if (d.running) { el.innerHTML = '<div class="empty" style="padding:18px">Checking...</div>'; return; }
+  el.innerHTML = d.steps.map(s => `<div class="step ${s.st}"><div class="si">${s.st==='ok'?'✓':s.st==='bad'?'✕':'!'}</div><div><b>${esc(s.title)}</b>${s.detail?`<p>${esc(s.detail)}</p>`:''}${s.fix?`<p class="fix">${esc(s.fix)}</p>`:''}</div></div>`).join(''); }
+
+/* ---------- renderers ---------- */
+function visible(){ return state.hideOffline ? state.accounts.filter(a => a.online) : state.accounts; }
+function noAccounts(){ return `<div class="empty">No accounts yet.<br>Click <b>Copy loader</b> and run it in your executor while in Booga Booga.</div>`; }
+function board(el, metric, list){
+  if (!list.length) { el.innerHTML = noAccounts(); return; }
+  const sorted = list.slice().sort((a,b) => (b.online-a.online) || ((b[metric]||0)-(a[metric]||0)));
+  const max = Math.max(1, ...sorted.map(a => a[metric]||0)), col = COLORS[metric];
+  el.innerHTML = sorted.map(a => { const g = a[metric+'Hour'] || 0;
+    return `<div class="lrow ${a.online?'':'off'}" data-acc="${esc(a.user)}">${avatar(a)}
+    <div class="nm"><b>${esc(a.user)}<span class="lvl">Lv ${a.level ?? '?'}</span></b><small>${a.online?(idle(a)?'<span class="badge warn">Idle</span> no gains this hour':'Online'):'Seen '+ago(a.lastSeen)}</small></div>
+    <div class="bar" style="--c:${col}"><i style="width:${(a[metric]||0)/max*100}%"></i></div><div class="val">${fmt(a[metric])}</div><div class="gain ${g?'':'zero'}">+${fmt(g)}/hr</div></div>`; }).join('');
+}
+function topEarners(el){
+  const list = state.accounts.map(a => ({ a, mojo: a.mojoHour||0, candy: a.candyHour||0 })).filter(x => x.mojo || x.candy).sort((x,y) => (y.mojo+y.candy)-(x.mojo+x.candy)).slice(0,5);
+  if (!list.length) { el.innerHTML = `<div class="empty">Nothing earned this hour yet.</div>`; return; }
+  const max = Math.max(1, ...list.map(x => x.mojo));
+  el.innerHTML = list.map((x,i) => `<div class="lrow" data-acc="${esc(x.a.user)}" style="grid-template-columns:22px 1fr auto">
+    <span style="color:var(--dim);font-weight:750">${i+1}</span><div class="nm"><b>${esc(x.a.user)}</b><small>+${fmt(x.mojo)} mojo · +${fmt(x.candy)} candy</small></div><div class="gain">+${fmt(x.mojo+x.candy)}</div></div>`).join('');
+}
+function fillSelect(sel, cur){ const el = $(sel); if (!el) return; const names = state.accounts.map(a => a.user);
+  if (el.options.length-1 !== names.length) { el.innerHTML = `<option value="all">All accounts</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(''); el.value = names.includes(cur) ? cur : 'all'; } }
+function thumb(i, cls){ const ph = `<span class="ph">${esc((i.name[0]||'?').toUpperCase())}</span>`;
+  return i.imageId ? `<img loading="lazy" src="${API_BASE()}/api/thumb/${esc(i.imageId)}" alt="" onerror="this.outerHTML=this.dataset.ph" data-ph="${esc(ph)}">` : ph; }
+function drawInv(){ const el = $('#grid'); if (!el) return; const q = state.invQ.toLowerCase(), all = drawInv.data || [];
+  const items = all.filter(i => i.name.toLowerCase().includes(q)).sort(state.invSort === 'name' ? (a,b) => a.name.localeCompare(b.name) : (a,b) => b.total-a.total);
+  setNum('#i-types', all.length, v => String(Math.round(v))); setNum('#i-total', all.reduce((s,i)=>s+i.total,0));
+  $('#i-top').textContent = all.length ? all.slice().sort((a,b)=>b.total-a.total)[0].name : '—';
+  $('#sub').textContent = items.length === all.length ? 'Everything your accounts are holding' : `Showing ${items.length} of ${all.length} items`;
+  if (!items.length) { el.innerHTML = `<div class="empty" style="grid-column:1/-1">${all.length ? 'No items match your search.' : 'No inventory reported yet.'}</div>`; return; }
+  el.innerHTML = items.map(i => { const holders = state.invUser === 'all' && i.accounts.length > 1 ? `${i.accounts.length} accounts` : '';
+    return `<div class="item" data-item="${esc(i.name)}"><div class="ico">${thumb(i)}</div><div class="n">${esc(i.name)}</div><div class="q">×${fmt(i.total)}</div>${holders?`<div class="chips">${holders}</div>`:''}</div>`; }).join('');
+}
+function sortedAccounts(){
+  const q = state.q.toLowerCase(), f = state.filter;
+  let L = state.accounts.filter(a => (!q || a.user.toLowerCase().includes(q) || String(a.displayName||'').toLowerCase().includes(q)) && (f==='all' || (f==='online') === !!a.online) && !(state.hideOffline && !a.online));
+  const s = state.sort;
+  L.sort(s==='name' ? (x,y)=>x.user.localeCompare(y.user) : s==='mojo' ? (x,y)=>(y.mojo||0)-(x.mojo||0) : s==='candy' ? (x,y)=>(y.candy||0)-(x.candy||0) : s==='rate' ? (x,y)=>((y.mojoHour||0)+(y.candyHour||0))-((x.mojoHour||0)+(x.candyHour||0)) : (x,y)=>(y.online-x.online)||x.user.localeCompare(y.user));
+  return L;
+}
+function drawAccounts(){ const body = $('#a-body'); if (!body) return; const L = sortedAccounts(), A = state.accounts, on = A.filter(a=>a.online).length;
+  $('#sub').textContent = `${on} online · ${A.length} total`;
+  body.innerHTML = L.length ? L.map(x => `<tr data-acc="${esc(x.user)}"><td><div class="who">${avatar(x)}<div class="nm"><b>${esc(x.user)}</b><small>${esc(x.displayName && x.displayName !== x.user ? x.displayName : '')}</small></div></div></td>
+    <td>${x.online ? (idle(x) ? '<span class="badge warn">Idle</span>' : '<span class="badge ok">Online</span>') : `<span class="badge">${ago(x.lastSeen)}</span>`}</td>
+    <td class="r">${x.level ?? '—'}</td><td class="r">${fmt(x.mojo)}</td><td class="r">${fmt(x.candy)}</td><td class="r ${x.mojoHour?'ok':''}">+${fmt(x.mojoHour)}</td><td class="r ${x.candyHour?'ok':''}">+${fmt(x.candyHour)}</td><td class="r hide-m">${fmt(x.items)}</td></tr>`).join('')
+    : `<tr><td colspan="8" class="empty" style="cursor:default">${A.length ? 'No accounts match.' : 'No accounts yet. Click <b>Copy loader</b> and run it in Roblox.'}</td></tr>`; }
+
+/* ---------- drawer ---------- */
+const drawer = $('#drawer'), shade = $('#shade');
+function openDrawer(kind, id){ state.drawer = { kind, id }; drawer.classList.add('show'); shade.classList.add('show'); drawer.setAttribute('aria-hidden','false'); drawer.scrollTop = 0; drawer._built = false; paintDrawer(); }
+function closeDrawer(){ state.drawer = null; drawer.classList.remove('show'); shade.classList.remove('show'); drawer.setAttribute('aria-hidden','true'); }
+shade.onclick = closeDrawer; document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+async function paintDrawer(){
+  const d = state.drawer; if (!d) return;
+  if (d.kind === 'account') {
+    const a = state.accounts.find(x => x.user === d.id);
+    if (!a) { closeDrawer(); return; }
+    if (!drawer._built) {
+      drawer.innerHTML = `<div class="dh">${avatar(a)}<div class="nm"><h2>${esc(a.user)}</h2><small id="d-sub"></small></div><button class="ibtn x" id="dx" aria-label="Close">${ICONS.close}</button></div>
+        <div class="dgrid"><div><small><img src="/icon-mojo.png" alt=""> Mojo</small><b id="d-mojo">—</b><br><em id="d-mojoh"></em></div><div><small><img src="/icon-candy.png" alt=""> Candy</small><b id="d-candy">—</b><br><em id="d-candyh"></em></div>
+        <div><small>Level</small><b id="d-lv">—</b></div><div><small>Inventory</small><b id="d-items">—</b></div></div>
+        <div class="dsec"><div class="line" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h4 style="margin:0">Earnings</h4>${rangePills()}</div>
+          <div class="card" style="padding:14px;margin-bottom:10px"><div class="chead" style="margin:0 0 4px"><span class="lbl">Mojo</span><b id="d-mt" style="color:var(--mojo)"></b></div><div class="chart" id="d-mc"><div class="sk" style="height:140px"></div></div></div>
+          <div class="card" style="padding:14px"><div class="chead" style="margin:0 0 4px"><span class="lbl">Candy</span><b id="d-ct" style="color:var(--candy)"></b></div><div class="chart" id="d-cc"><div class="sk" style="height:140px"></div></div></div></div>
+        <div class="dsec"><h4>Top items</h4><div id="d-inv"><div class="sk" style="height:80px"></div></div></div>
+        <div class="line"><a class="btn ghost sm" id="d-prof" target="_blank" rel="noopener" style="text-decoration:none">Roblox profile</a><button class="btn ghost sm red" id="d-del">Remove account</button></div>`;
+      drawer._built = true;
+      $('#dx').onclick = closeDrawer;
+      drawer.querySelectorAll('[data-pills] button').forEach(b => b.onclick = () => { state.range = +b.dataset.r; ls.set('bb_range', state.range); drawer.querySelectorAll('[data-pills] button').forEach(x => x.classList.toggle('active', x === b)); paintDrawer(); });
+      $('#d-del').onclick = async () => { if (!confirm('Remove ' + a.user + ' from the dashboard? It will reappear if its loader is still running.')) return;
+        try { await api('/api/account/' + encodeURIComponent(a.user), { method:'DELETE' }); closeDrawer(); refresh(true); toast('Removed ' + a.user); } catch(e) { toast('Could not remove'); } };
+      const p = $('#d-prof'); if (a.userId) p.href = 'https://www.roblox.com/users/' + a.userId + '/profile'; else p.style.display = 'none';
+    }
+    $('#d-sub').innerHTML = a.online ? (idle(a) ? '<span class="badge warn">Idle</span> online, no gains this hour' : '<span class="badge ok">Online</span>') + (a.displayName && a.displayName !== a.user ? ' · ' + esc(a.displayName) : '') : 'Last seen ' + ago(a.lastSeen);
+    setNum('#d-mojo', a.mojo); setNum('#d-candy', a.candy); $('#d-mojoh').textContent = `+${fmt(a.mojoHour)} / hr`; $('#d-candyh').textContent = `+${fmt(a.candyHour)} / hr`;
+    $('#d-lv').textContent = a.level ?? '—'; $('#d-items').textContent = `${fmt(a.items)} (${a.kinds||0} types)`;
+    try {
+      const [cm, cc, inv] = await Promise.all([api(`/api/chart?metric=mojo&range=${state.range}&user=${encodeURIComponent(a.user)}`), api(`/api/chart?metric=candy&range=${state.range}&user=${encodeURIComponent(a.user)}`), api('/api/inventory?user=' + encodeURIComponent(a.user))]);
+      if (!state.drawer || state.drawer.id !== a.user) return;
+      $('#d-mt').textContent = '+' + fmt(cm.total); $('#d-ct').textContent = '+' + fmt(cc.total);
+      chart('#d-mc', cm.buckets, '#a78bfa', 'Mojo', 'dm'); chart('#d-cc', cc.buckets, '#fbbf24', 'Candy', 'dc');
+      const items = inv.items.slice(0, 8);
+      $('#d-inv').innerHTML = items.length ? items.map(i => `<div class="hrow" data-item="${esc(i.name)}"><span class="who" style="gap:10px"><span class="ico" style="width:30px;height:30px;border-radius:8px;background:var(--card2);display:grid;place-items:center;overflow:hidden">${thumb(i)}</span>${esc(i.name)}</span><b>×${fmt(i.total)}</b></div>`).join('') : '<div class="empty" style="padding:14px">No inventory reported.</div>';
+    } catch (e) { /* banner handles it */ }
+  } else {
+    const known = (drawInv.data || []).find(i => i.name === d.id);
+    if (!drawer._built) { drawer._built = true;
+    drawer.innerHTML = `<div class="dh"><div class="item" style="padding:0;border:0;background:none;cursor:default"><div class="ico" style="width:56px;height:56px">${thumb({name:d.id, imageId:known && known.imageId})}</div></div><div class="nm"><h2>${esc(d.id)}</h2><small id="d-sub">Loading...</small></div><button class="ibtn x" id="dx" aria-label="Close">${ICONS.close}</button></div><div class="dsec"><h4>Held by</h4><div id="d-hold"><div class="sk" style="height:90px"></div></div></div>`;
+    $('#dx').onclick = closeDrawer; }
+    try {
+      const inv = await api('/api/inventory?user=all'); const it = inv.items.find(i => i.name === d.id);
+      if (!state.drawer || state.drawer.id !== d.id) return;
+      if (!it) { $('#d-hold').innerHTML = '<div class="empty" style="padding:14px">No account holds this item.</div>'; return; }
+      $('#d-sub').textContent = `×${fmt(it.total)} across ${it.accounts.length} account${it.accounts.length===1?'':'s'}`;
+      $('#d-hold').innerHTML = it.accounts.slice().sort((a,b)=>b.amount-a.amount).map(h => `<div class="hrow" data-acc="${esc(h.user)}"><span>${esc(h.user)}</span><b>×${fmt(h.amount)}</b></div>`).join('');
+    } catch (e) {}
+  }
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-acc]'); if (a) { openDrawer('account', a.dataset.acc); return; }
+  const i = e.target.closest('[data-item]'); if (i) openDrawer('item', i.dataset.item);
+});
+
+/* ---------- refresh loop ---------- */
+async function refresh(force){
+  if (busy && !force) return; if (document.hidden && !force) return; busy = true;
+  try {
+    if (!state.key) { setConn({ s:'nokey' }); if (state.tab !== 'settings' && !loaded) { loaded = true; setTab('settings', true); } else if (state.tab === 'settings' && !state.diag) runDiag(); return; }
+    const a = await api('/api/accounts'); state.accounts = a.accounts; setConn({ s:'ok' }); loaded = true;
+    const tg = $('#tagAcc'); if (tg) tg.textContent = state.accounts.length;
+    const t = state.tab, A = state.accounts, on = A.filter(x => x.online).length, hrs = state.range/60;
+    if (t === 'overview') {
+      const sum = k => A.reduce((s,x) => s + (x[k]||0), 0), idleN = A.filter(idle).length;
+      setNum('#s-on', on, v => String(Math.round(v))); $('#s-on-d').innerHTML = `of ${A.length} account${A.length===1?'':'s'}${idleN ? ` · <span class="warnc">${idleN} idle</span>` : ''}`;
+      setNum('#s-mojo', sum('mojo')); $('#s-mojo-d').innerHTML = `<b>+${fmt(sum('mojoHour'))}</b> this hour`;
+      setNum('#s-candy', sum('candy')); $('#s-candy-d').innerHTML = `<b>+${fmt(sum('candyHour'))}</b> this hour`;
+      setNum('#s-items', sum('items')); $('#s-items-d').textContent = `${Math.max(0,...A.map(x=>x.kinds||0))} item types`;
+      const [cm, cc] = await Promise.all([api('/api/chart?metric=mojo&range=' + state.range), api('/api/chart?metric=candy&range=' + state.range)]);
+      if (state.tab !== 'overview') return;
+      setNum('#o-mojo', cm.total, v => '+' + fmt(v)); setNum('#o-candy', cc.total, v => '+' + fmt(v));
+      $('#o-mojo-l').textContent = $('#o-candy-l').textContent = 'earned in the last ' + RL[state.range];
+      $('#o-mojo-r').innerHTML = `<b>${fmt(cm.total/hrs)}</b> / hr avg`; $('#o-candy-r').innerHTML = `<b>${fmt(cc.total/hrs)}</b> / hr avg`;
+      chart('#o-mojo-c', cm.buckets, '#a78bfa', 'Mojo', 'om'); chart('#o-candy-c', cc.buckets, '#fbbf24', 'Candy', 'oc');
+      $('#sp-mojo').innerHTML = spark(cm.buckets, '#a78bfa'); $('#sp-candy').innerHTML = spark(cc.buckets, '#fbbf24');
+      const el = $('#o-list'), list = visible().slice().sort((x,y) => (y.online-x.online)||(y.mojo||0)-(x.mojo||0)).slice(0,6);
+      el.innerHTML = list.length ? list.map(x => `<div class="lrow ov ${x.online?'':'off'}" data-acc="${esc(x.user)}">${avatar(x)}<div class="nm"><b>${esc(x.user)}<span class="lvl">Lv ${x.level ?? '?'}</span></b><small>${x.online?(idle(x)?'<span class="badge warn">Idle</span>':'Online'):'Seen '+ago(x.lastSeen)}</small></div><div class="val" style="text-align:left">${fmt(x.mojo)} <small class="u" style="color:var(--mute);font-weight:500">mojo</small></div><div class="val" style="text-align:left">${fmt(x.candy)} <small class="u" style="color:var(--mute);font-weight:500">candy</small></div></div>`).join('') : noAccounts();
+      topEarners($('#o-top'));
+    } else if (t === 'mojo' || t === 'candy') {
+      fillSelect('#h-user', state.chartUser);
+      const c = await api(`/api/chart?metric=${t}&range=${state.range}&user=${encodeURIComponent(state.chartUser)}`);
+      if (state.tab !== t) return;
+      setNum('#h-big', c.total, v => '+' + fmt(v)); $('#h-lbl').textContent = 'earned in the last ' + RL[state.range];
+      chart('#h-chart', c.buckets, t === 'mojo' ? '#a78bfa' : '#fbbf24', NAMES[t], 'h');
+      const best = A.slice().sort((x,y) => (y[t]||0)-(x[t]||0))[0];
+      setNum('#h-total', A.reduce((s,x)=>s+(x[t]||0),0)); $('#h-rate').textContent = fmt(c.total/hrs) + ' / hr'; $('#h-best').textContent = best ? best.user : '—'; setNum('#h-on', on, v => String(Math.round(v)));
+      board($('#h-list'), t, visible());
+    } else if (t === 'inventory') {
+      fillSelect('#invUser', state.invUser);
+      const inv = await api('/api/inventory?user=' + encodeURIComponent(state.invUser));
+      if (state.tab !== 'inventory') return; drawInv.data = inv.items; drawInv();
+    } else if (t === 'accounts') { drawAccounts(); }
+    else { if (!state.diag) runDiag(); }
+    if (state.drawer) paintDrawer();
+  } catch (e) {
+    const k = e.kind || 'network';
+    setConn({ s: k, detail: e.detail || (k === 'network' ? 'Could not reach the dashboard server.' : String(e.message || e)), hint: e.hint });
+    if (k !== 'auth' && k !== 'nokey' && !loaded) { loaded = true; if (state.tab !== 'settings') { setTab('settings', true); return; } }
+    if (state.tab === 'settings' && !state.diag) runDiag();
+  } finally { busy = false; }
+}
+function start(){ clearInterval(timer); timer = setInterval(refresh, Math.max(2, state.interval) * 1000); }
+function setTab(t, keepDiag){ state.tab = t; ls.set('bb_tab', t); closeDrawer(); if (!keepDiag) state.diag = null; shell(); refresh(true); window.scrollTo(0, 0); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(true); });
+$('#connBtn').onclick = () => setTab('settings');
+
+async function copyLoader(){
+  if (!state.key) { toast('Add your key in Settings first'); setTab('settings'); return; }
+  const s = loaderLine(false);
+  try { await navigator.clipboard.writeText(s); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(_) {} ta.remove(); }
+  toast('Loader copied - run it in your executor');
+}
+$('#copyLoader').onclick = copyLoader;
+buildNav(); shell(); refresh(true); start();
+})();
+</script>
+</body>
+</html>
